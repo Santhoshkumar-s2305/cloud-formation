@@ -5,15 +5,17 @@ pipeline {
         steps {
             git branch: 'main',
                 credentialsId: 'my_cred_id',
-                url: 'git@test.com/proj/test_proj.git'
+                url: 'https://github.com/Santhoshkumar-s2305/cloud-formation.git/'
   
         }
     }
        
 	stage('Submit Stack') {
             steps {
-            sh "aws cloudformation create-stack --stack-name s3bucket --template-body file://simplests3cft.json --region 'us-east-1'"
-              }
-           }
-      }
+                withAWS(credentials: 'aws_configure', region: 'us-east-1') {
+              sh "aws cloudformation create-stack --stack-name api --template-body file://jenkinslambda/api.json --capabilities CAPABILITY_NAMED_IAM"
+                }
+            }
+        }
+    }
 }
